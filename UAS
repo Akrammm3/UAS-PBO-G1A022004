@@ -1,0 +1,85 @@
+from tkinter import *
+from tkinter import filedialog, messagebox
+
+def new_file():
+    text.delete('1.0', END)
+
+def open_file():
+    file_path = filedialog.askopenfilename(filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')])
+    if file_path:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            text.delete('1.0', END)
+            text.insert('1.0', content)
+
+def save_file():
+    file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('Text Files', '*.txt'), ('All Files', '*.*')])
+    if file_path:
+        content = text.get('1.0', END)
+        with open(file_path, 'w') as file:
+            file.write(content)
+
+def cut():
+    text.event_generate('<<Cut>>')
+
+def copy():
+    text.event_generate('<<Copy>>')
+
+def paste():
+    text.event_generate('<<Paste>>')
+
+def about():
+    messagebox.showinfo("About", "Ini adalah program teks sederhana dengan GUI menggunakan Tkinter.")
+
+def change_font(style):
+    text.config(font=style)
+
+root = Tk()
+root.title("Kelompok 1")
+root.geometry("800x400")
+
+# Canvas with background color
+canvas = Canvas(root, bg="green")
+canvas.pack(fill=BOTH, expand=True)
+
+# Text area
+text = Text(canvas)
+text.pack(fill=BOTH, expand=True)
+
+# Menu bar
+menu_bar = Menu(root)
+root.config(menu=menu_bar)
+
+# File menu
+file_menu = Menu(menu_bar, tearoff=False)
+menu_bar.add_cascade(label="File", menu=file_menu)
+file_menu.add_command(label="New", command=new_file)
+file_menu.add_command(label="Open", command=open_file)
+file_menu.add_command(label="Save", command=save_file)
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=root.quit)
+
+# Edit menu
+edit_menu = Menu(menu_bar, tearoff=False)
+menu_bar.add_cascade(label="Edit", menu=edit_menu)
+edit_menu.add_command(label="Cut", command=cut)
+edit_menu.add_command(label="Copy", command=copy)
+edit_menu.add_command(label="Paste", command=paste)
+
+# Format menu
+format_menu = Menu(menu_bar, tearoff=False)
+menu_bar.add_cascade(label="Format", menu=format_menu)
+
+# Font submenu
+font_submenu = Menu(format_menu, tearoff=False)
+format_menu.add_cascade(label="Font", menu=font_submenu)
+font_submenu.add_command(label="Arial", command=lambda: change_font("Arial"))
+font_submenu.add_command(label="Times New Roman", command=lambda: change_font("Times New Roman"))
+font_submenu.add_command(label="Courier New", command=lambda: change_font("Courier New"))
+
+# Help menu
+help_menu = Menu(menu_bar, tearoff=False)
+menu_bar.add_cascade(label="Help", menu=help_menu)
+help_menu.add_command(label="About", command=about)
+
+root.mainloop()
